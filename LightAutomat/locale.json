@@ -1,0 +1,15 @@
+{
+  "translations": {
+    "de": { 
+      "State Variable:": "Statusvariable:",
+      "Duration (in minutes):": "Dauer (in Minuten):",
+      "Motion Variable:": "Bewegungsvariable:",
+      "Permanent Variable:": "Dauerbetrieb:",
+      "Simultaneous execution of a script.": "Gleichzeitiges Ausführen eines Scriptes.",
+      "Script:": "Script:",
+      "Advanced settings:": "Erweiterte Einstellungen:",
+      "Execute only the script - no state switch!": "Nur Script ausführen - kein Ausschaltvorgang!",
+      "State variable is only a simple boolean!": "Statusvariable ist eine reine boolsche Variable!"
+    }
+  }
+}

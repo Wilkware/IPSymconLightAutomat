@@ -1,0 +1,13 @@
+{
+  "elements": [
+    {"type": "SelectVariable", "name": "StateVariable", "caption": "State Variable:" },
+    {"type": "NumberSpinner", "name": "Duration",  "caption": "Duration (in minutes):" },
+    {"type": "SelectVariable", "name": "MotionVariable", "caption": "Motion Variable:" },
+    {"type": "SelectVariable", "name": "PermanentVariable", "caption": "Permanent Variable:" },
+    {"type": "CheckBox", "name": "ExecScript", "caption": "Simultaneous execution of a script." },
+    {"type": "SelectScript", "name": "ScriptVariable", "caption": "Script:" },
+    {"type": "Label", "label": "Advanced settings:" },
+    {"type": "CheckBox", "name": "OnlyBool", "caption": "State variable is only a simple boolean!" },
+    {"type": "CheckBox", "name": "OnlyScript", "caption": "Execute only the script - no state switch!" }
+  ]
+}
