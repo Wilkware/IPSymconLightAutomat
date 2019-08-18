@@ -2,7 +2,7 @@
 [![Product](https://img.shields.io/badge/Symcon%20Version-4.1%20%3E-blue.svg)](https://www.symcon.de/produkt/)
 [![Version](https://img.shields.io/badge/Modul%20Version-3.3.20190918-orange.svg)](https://github.com/Wilkware/IPSymconToolmatic)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-[![StyleCI](https://github.styleci.io/repos/76893952/shield?style=flat)](https://github.styleci.io/repos/76893952)
+[![StyleCI](https://github.styleci.io/repos/203019119/shield?style=flat)](https://github.styleci.io/repos/203019119)
 
 # Lichtautomat
 
@@ -50,7 +50,7 @@ __Konfigurationsseite__:
 
 Name               | Beschreibung
 ------------------ | ---------------------------------
-StateVariable      | Quellvariable, über welche der Automat getriggert wird.  Meistens im Kanal 1 von HomeMatic Geräten zu finden und ist vom Typ boolean  und hat den Namen "STATE" (z.B: wenn man die Geräte mit dem HomeMatic Configurator anlegen lässt.).
+StateVariable      | Quellvariable, über welche der Automat getriggert wird. Meistens im Kanal 1 von HomeMatic Geräten zu finden und ist vom Typ boolean und hat den Namen "STATE" (z.B: wenn man die Geräte mit dem HomeMatic Configurator anlegen lässt.).
 Duration           | Zeit, bis das Licht(Aktor) wieder ausgeschaltet werden soll.
 MotionVariable     | Statusvariable eines Bewegungsmelders (true = Anwesend; false = Abwesend).
 PermanentVariable  | Statusvariable, über welchen der Automat zeitweise deaktiviert werden kann (true = Dauerbetrieb).
