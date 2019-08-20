@@ -4,9 +4,12 @@
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![StyleCI](https://github.styleci.io/repos/203019119/shield?style=flat)](https://github.styleci.io/repos/203019119)
 
-# Lichtautomat
+# Toolmatic Light Automat (Lichtautomat)
 
-Überwacht und schaltet das Licht automatisch nach einer bestimmten Zeit wieder aus.
+Die *Toolmatic Bibliothek* ist eine kleine Tool-Sammlung im Zusammenhang mit HomeMatic/IP Geräten.  
+Hauptsächlich beinhaltet sie kleine Erweiterung zur Automatisierung von Aktoren oder erleichtert das Steuern von Geräten bzw. bietet mehr Komfort bei der Bedienung.  
+  
+Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer bestimmten Zeit wieder aus.
 
 ## Inhaltverzeichnis
 
@@ -38,13 +41,13 @@
 
 ### 3. Software-Installation
 
-* Über den Modul Store das Modul 'Light Automat' installieren.
+* Über den Modul Store das Modul *Toolmatic Light Automat* installieren.
 * Alternativ Über das Modul-Control folgende URL hinzufügen.  
 `https://github.com/Wilkware/IPSymconLightAutomat` oder `git://github.com/Wilkware/IPSymconLightAutomat.git`
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
-* Unter "Instanz hinzufügen" ist das 'Lichtautomat'-Modul (Alias: Treppenautomat, Tasterschaltung) unter dem Hersteller '(Sonstige)' aufgeführt.
+* Unter 'Instanz hinzufügen' ist das *Lichtautomat*'*-Modul (Alias: *Treppenautomat*, *Tasterschaltung*) unter dem Hersteller '(Geräte)' aufgeführt.
 
 __Konfigurationsseite__:
 
@@ -91,6 +94,7 @@ Setzt die Wartezeit auf 10 Minuten.
 v3.3.20190818
 
 * _NEU_: Umstellung für Module Store
+* _FIX_: Dokumentation überarbeitet
 
 v3.2.20170322
 
