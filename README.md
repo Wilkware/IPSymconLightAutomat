@@ -51,16 +51,16 @@ Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer best
 
 __Konfigurationsseite__:
 
-Name               | Beschreibung
------------------- | ---------------------------------
-StateVariable      | Quellvariable, über welche der Automat getriggert wird. Meistens im Kanal 1 von HomeMatic Geräten zu finden und ist vom Typ boolean und hat den Namen "STATE" (z.B: wenn man die Geräte mit dem HomeMatic Configurator anlegen lässt.).
-Duration           | Zeit, bis das Licht(Aktor) wieder ausgeschaltet werden soll.
-MotionVariable     | Statusvariable eines Bewegungsmelders (true = Anwesend; false = Abwesend).
-PermanentVariable  | Statusvariable, über welchen der Automat zeitweise deaktiviert werden kann (true = Dauerbetrieb).
-ExecScript         | Schalter, ob zusätzlich ein Script ausgeführt werden soll (IPS_ExecScript).
-ScriptVariable     | Script(auswahl), welches zum Einsatz kommen soll.
-OnlyScript         | Schalter, ob nur das Script ausgeführt werden soll, kein Schaltvorgang.
-OnlyBool           | Schalter, ob die Statusvariable über HM-Befehl geschaltet werden soll oder einfach ein nur einfacher boolscher Switch gemacht werden soll.
+Name                                             | Beschreibung
+------------------------------------------------ | ---------------------------------
+Statusvariable                                   | Quellvariable, über welche der Automat getriggert wird. Meistens im Kanal 1 von HomeMatic Geräten zu finden und ist vom Typ boolean und hat den Namen "STATE" (z.B: wenn man die Geräte mit dem HomeMatic Configurator anlegen lässt.).
+Dauer (in Minuten)                               | Zeit, bis das Licht(Aktor) wieder ausgeschaltet werden soll.
+Bewegungsvariable                                | Statusvariable eines Bewegungsmelders (true = Anwesend; false = Abwesend).
+Dauerbetrieb                                     | Statusvariable, über welchen der Automat zeitweise deaktiviert werden kann (true = Dauerbetrieb).
+Gleichzeitiges Ausführen eines Scriptes.         | Schalter, ob zusätzlich ein Script ausgeführt werden soll (IPS_ExecScript).
+Skript                                           | Script(auswahl), welches zum Einsatz kommen soll.
+Nur Script ausführen - kein Ausschaltvorgang!    | Schalter, ob nur das Script ausgeführt werden soll, kein Schaltvorgang.
+Statusvariable ist eine reine boolsche Variable! | Schalter, ob die Statusvariable über HM-Befehl geschaltet werden soll oder einfach ein nur einfacher boolscher Switch gemacht werden soll.
 
 ### 5. Statusvariablen und Profile
 
