@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__.'/../libs/traits.php';  // Allgemeine Funktionen
+declare(strict_types=1);
+
+require_once __DIR__ . '/../libs/traits.php';  // Allgemeine Funktionen
 
 // CLASS LightAutomat
 class LightAutomat extends IPSModule
@@ -52,7 +54,7 @@ class LightAutomat extends IPSModule
             case VM_UPDATE:
                 // Safty Check
                 if ($senderID != $this->ReadPropertyInteger('StateVariable')) {
-                    $this->SendDebug('MessageSink', 'SenderID: '.$senderID.' unbekannt!');
+                    $this->SendDebug('MessageSink', 'SenderID: ' . $senderID . ' unbekannt!');
                     break;
                 }
                 // Dauerbetrieb, tue nix!
@@ -102,7 +104,7 @@ class LightAutomat extends IPSModule
                             $this->SendDebug('TLA_Trigger', 'Gerät konnte nicht ausgeschalten werden (UNREACH)!');
                         }
                     }
-                    $this->SendDebug('TLA_Trigger', 'StateVariable (#'.$sv.') auf false geschalten!');
+                    $this->SendDebug('TLA_Trigger', 'StateVariable (#' . $sv . ') auf false geschalten!');
                 }
             }
             // Script ausführen
@@ -113,7 +115,7 @@ class LightAutomat extends IPSModule
                         $this->SendDebug('Script Execute: Return Value', $rs);
                     }
                 } else {
-                    $this->SendDebug('TLA_Trigger', 'Script #'.$this->ReadPropertyInteger('ScriptVariable').' existiert nicht!');
+                    $this->SendDebug('TLA_Trigger', 'Script #' . $this->ReadPropertyInteger('ScriptVariable') . ' existiert nicht!');
                 }
             }
         } else {
