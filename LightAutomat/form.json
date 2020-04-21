@@ -1,13 +1,23 @@
 {
   "elements": [
+    {"type": "Label", "label": "General settings:" },
     {"type": "SelectVariable", "name": "StateVariable", "caption": "State Variable:" },
     {"type": "NumberSpinner", "name": "Duration",  "caption": "Duration (in minutes):" },
     {"type": "SelectVariable", "name": "MotionVariable", "caption": "Motion Variable:" },
     {"type": "SelectVariable", "name": "PermanentVariable", "caption": "Permanent Variable:" },
     {"type": "CheckBox", "name": "ExecScript", "caption": "Simultaneous execution of a script." },
     {"type": "SelectScript", "name": "ScriptVariable", "caption": "Script:" },
+    {"type": "SelectEvent", "name": "EventVariable", "caption": "Schedule:" },
     {"type": "Label", "label": "Advanced settings:" },
     {"type": "CheckBox", "name": "OnlyBool", "caption": "State variable is only a simple boolean!" },
     {"type": "CheckBox", "name": "OnlyScript", "caption": "Execute only the script - no state switch!" }
+  ],
+  "actions": [
+    {"type": "Label", "caption": "If a time-controlled activation or deactivation of the machine is to be carried out, you can create a corresponding week program with the help of the button. It is created below the instance. It can then be set to your own requirements and stored as a time switch.\nNOTE: An inactive week program is treated like a non-existent or selected timer!" },
+    {"type": "RowLayout",
+      "items": [
+        {"type": "Button", "caption": "ADD SCHEDULE", "onClick": "TLA_CreateSchedule($id);"}
+      ]
+    }
   ]
 }

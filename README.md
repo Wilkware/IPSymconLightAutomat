@@ -1,8 +1,8 @@
 # Toolmatic Light Automat (Lichtautomat)
 
 [![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Product](https://img.shields.io/badge/Symcon%20Version-5.0%20%3E-blue.svg)](https://www.symcon.de/produkt/)
-[![Version](https://img.shields.io/badge/Modul%20Version-3.3.20190918-orange.svg)](https://github.com/Wilkware/IPSymconLightAutomat)
+[![Product](https://img.shields.io/badge/Symcon%20Version-5.1%20%3E-blue.svg)](https://www.symcon.de/produkt/)
+[![Version](https://img.shields.io/badge/Modul%20Version-4.0.20200421-orange.svg)](https://github.com/Wilkware/IPSymconLightAutomat)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Actions](https://github.com/Wilkware/IPSymconLightAutomat/workflows/Check%20Style/badge.svg)](https://github.com/Wilkware/IPSymconLightAutomat/actions)
 
@@ -31,13 +31,14 @@ Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer best
 * Sollte das Licht schon vorher manuell aus geschalten worden sein, wird der Timer deaktiviert.
 * Zusätzlich bzw. ausschließlich kann ein Script ausgeführt werden.
 * Dauerbetrieb mittels hinterlegter boolean Variable, wenn **true** wird kein Timer gestartet.
+* Hinterlegung eines Wochenplans zum gezielten Aktivieren bzw. Deaktivierung des Automaten
 * Modul mit Bewegungsmelder, wenn dieser aktiv ist wird der Timer immer wieder erneuert.
 * Über die Funktion _TLA_Duration(id, minuten)_ kann die Wartezeit via Script (WebFront) gesetzt werden.
 * Statusvariable muss nicht von einer HM-Instanze sein, kann auch einfach eine boolsche Variable sein.
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 5.0
+* IP-Symcon ab Version 5.1
 
 ### 3. Software-Installation
 
@@ -90,6 +91,12 @@ Beispiel:
 Setzt die Wartezeit auf 10 Minuten.
 
 ### 8. Versionshistorie
+
+v4.0.20200421
+
+* _NEU_: Zeitplan hinzugefügt
+* _FIX_: Interne Bibliotheken überarbeitet
+* _FIX_: Dokumentation überarbeitet
 
 v3.3.20190818
 

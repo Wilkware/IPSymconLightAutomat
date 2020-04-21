@@ -2,12 +2,21 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../libs/traits.php';  // Allgemeine Funktionen
+require_once __DIR__ . '/../libs/traits.php';  // General helper functions
 
 // CLASS LightAutomat
 class LightAutomat extends IPSModule
 {
     use DebugHelper;
+    use EventHelper;
+
+    // Schdule constant
+    const SCHEDULE_NAME = 'Zeitplan';
+    const SCHEDULE_IDENT = 'circuit_diagram';
+    const SCHEDULE_SWITCH = [
+        1 => ['Aktiv', 0x00FF00, ''],
+        2 => ['Inaktiv', 0xFF0000, ''],
+    ];
 
     public function Create()
     {
@@ -126,7 +135,7 @@ class LightAutomat extends IPSModule
 
     /**
      * This function will be available automatically after the module is imported with the module control.
-     * Using the custom prefix this function will be callable from PHP and JSON-RPC through:.
+     * Using the custom prefix this function will be callable from PHP and JSON-RPC through:
      *
      * TLA_Duration($id, $duration);
      *
@@ -136,5 +145,17 @@ class LightAutomat extends IPSModule
     {
         IPS_SetProperty($this->InstanceID, 'Duration', $duration);
         IPS_ApplyChanges($this->InstanceID);
+    }
+
+    /**
+     * This function will be available automatically after the module is imported with the module control.
+     * Using the custom prefix this function will be callable from PHP and JSON-RPC through:
+     *
+     * TLA_CreateSchedule($id);
+     *
+     */
+    public function CreateSchedule()
+    {
+        $this->CreateWeeklySchedule($this->InstanceID, self::SCHEDULE_NAME, self::SCHEDULE_IDENT, self::SCHEDULE_SWITCH, -1);
     }
 }
