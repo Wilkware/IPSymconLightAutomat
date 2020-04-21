@@ -2,9 +2,9 @@
 
 /**
  * DebugHelper.php
- * 
+ *
  * Part of the Trait-Libraray for IP-Symcon Modules.
- * 
+ *
  * @package       traits
  * @author        Heiko Wilknitz <heiko@wilkware.de>
  * @copyright     2020 Heiko Wilknitz

@@ -10,7 +10,10 @@ class LightAutomat extends IPSModule
     use DebugHelper;
     use EventHelper;
 
-    // Schdule constant
+    // Variable constant
+    const VARIABLE_NAME = 'Dauerbetrieb';
+    const VARIABLE_IDENT = 'continuous_operation';
+    // Schedule constant
     const SCHEDULE_NAME = 'Zeitplan';
     const SCHEDULE_IDENT = 'circuit_diagram';
     const SCHEDULE_SWITCH = [
@@ -29,6 +32,7 @@ class LightAutomat extends IPSModule
         $this->RegisterPropertyInteger('PermanentVariable', 0);
         $this->RegisterPropertyBoolean('ExecScript', false);
         $this->RegisterPropertyInteger('ScriptVariable', 0);
+        $this->RegisterPropertyInteger('EventVariable', 0);
         $this->RegisterPropertyBoolean('OnlyBool', false);
         $this->RegisterPropertyBoolean('OnlyScript', false);
         $this->RegisterTimer('TriggerTimer', 0, "TLA_Trigger(\$_IPS['TARGET']);");
@@ -145,6 +149,25 @@ class LightAutomat extends IPSModule
     {
         IPS_SetProperty($this->InstanceID, 'Duration', $duration);
         IPS_ApplyChanges($this->InstanceID);
+    }
+
+    /**
+     * This function will be available automatically after the module is imported with the module control.
+     * Using the custom prefix this function will be callable from PHP and JSON-RPC through:
+     *
+     * TLA_CreateVariable($id);
+     *
+     */
+    public function CreateVariable()
+    {
+        $vid = @IPS_GetObjectIDByIdent(self::VARIABLE_IDENT, $this->InstanceID);
+        if ($vid === false) {
+            $vid = IPS_CreateVariable(VARIABLETYPE_BOOLEAN);
+            IPS_SetParent($vid, $this->InstanceID);
+            IPS_SetName($vid, self::VARIABLE_NAME);
+            IPS_SetIdent($vid, self::VARIABLE_IDENT);
+            IPS_SetVariableCustomProfile($vid, '~Switch');
+        }
     }
 
     /**

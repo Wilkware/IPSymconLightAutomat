@@ -2,9 +2,9 @@
 
 /**
  * traits.php
- * 
+ *
  * Central entry point to the traits library.
- * 
+ *
  * @package       traits
  * @author        Heiko Wilknitz <heiko@wilkware.de>
  * @copyright     2020 Heiko Wilknitz
