@@ -146,7 +146,7 @@ trait EventHelper
                 $startPointFound = false;
                 $actualSlotFound = false;
                 $endPointFound = false;
-                $data['StartSysTime'] = mktime(0, 0, 0, date('m', $time), date('d', $time), date('Y', $time));
+                $data['StartSysTime'] = mktime(0, 0, 0, intval(date('m', $time)), intval(date('d', $time)), intval(date('Y', $time)));
                 $searchTimeActDay = date('H', $time) * 3600 + date('i', $time) * 60 + date('s', $time);
                 //Aktuellen Schaltpunkt suchen --> Wir nutzen die Eigenschaft, dass die Schaltpunkte immer aufsteigend sortiert sind.
                 foreach ($g['Points'] as $p) {
@@ -157,18 +157,18 @@ trait EventHelper
                         if ($actualSlotFound == false) {
                             $actualSlotFound = true;
                             $data['ActionID'] = $p['ActionID'];
-                            $data['StartSysTime'] = mktime($p['Start']['Hour'], $p['Start']['Minute'], $p['Start']['Second'], date('m', $time), date('d', $time), date('Y', $time));
+                            $data['StartSysTime'] = mktime($p['Start']['Hour'], $p['Start']['Minute'], $p['Start']['Second'], intval(date('m', $time)), intval(date('d', $time)), intval(date('Y', $time)));
                         } else {
                             $startPointFound = true;
                             $data['PreviousActionID'] = $data['ActionID'];
                             $data['ActionID'] = $p['ActionID'];
-                            $data['StartSysTime'] = mktime($p['Start']['Hour'], $p['Start']['Minute'], $p['Start']['Second'], date('m', $time), date('d', $time), date('Y', $time));
+                            $data['StartSysTime'] = mktime($p['Start']['Hour'], $p['Start']['Minute'], $p['Start']['Second'], intval(date('m', $time)), intval(date('d', $time)), intval(date('Y', $time)));
                         }
                     } else {
                         if ($endPointFound == false) {
                             $endPointFound = true;
                             $data['NextActionID'] = $p['ActionID'];
-                            $data['EndSysTime'] = mktime($p['Start']['Hour'], $p['Start']['Minute'], $p['Start']['Second'], date('m', $time), date('d', $time), date('Y', $time));
+                            $data['EndSysTime'] = mktime($p['Start']['Hour'], $p['Start']['Minute'], $p['Start']['Second'], intval(date('m', $time)), intval(date('d', $time)), intval(date('Y', $time)));
                         } else {
                             break;
                         }
@@ -350,9 +350,9 @@ trait EventHelper
                     $nextEvent = GetWeekplanState($id, $data['EndSysTime'], true);
 
                     if (($nextEvent['ActionID'] == 0) && ($nextEvent['PreviousActionID'] == 0) && ($nextEvent['NextActionID'] == 0)) {
-                        $data['EndSysTime'] = mktime(0, 0, 0, date('m', $nextEvent['StartSysTime']), date('d', $nextEvent['StartSysTime']) + 1, date('Y', $nextEvent['StartSysTime']));
+                        $data['EndSysTime'] = mktime(0, 0, 0, intval(date('m', $nextEvent['StartSysTime'])), intval(date('d', $nextEvent['StartSysTime'])) + 1, intval(date('Y', $nextEvent['StartSysTime'])));
                     } elseif (($nextEvent['NextActionID'] == 0) && ($nextEvent['PreviousActionID'] == 0)) {
-                        $data['EndSysTime'] = mktime(0, 0, 0, date('m', $nextEvent['StartSysTime']), date('d', $nextEvent['StartSysTime']) + 1, date('Y', $nextEvent['StartSysTime']));
+                        $data['EndSysTime'] = mktime(0, 0, 0, intval(date('m', $nextEvent['StartSysTime'])), intval(date('d', $nextEvent['StartSysTime'])) + 1, intval(date('Y', $nextEvent['StartSysTime'])));
                     } else {
                         $data['EndSysTime'] = $nextEvent['StartSysTime'];
                         $data['NextActionID'] = $nextEvent['ActionID'];
@@ -371,15 +371,15 @@ trait EventHelper
 
                 //Wenn naechster Schaltpunkt = 0 ist --> Folgeevent suchen !!
                 if (($data['NextActionID'] == 0) && ($data['ActionID'] != 0) && ($data['PreviousActionID'] != 0)) {
-                    $checkTime = mktime(0, 0, 0, date('m', $data['CheckSysTime']), date('d', $data['CheckSysTime']) + 1, date('Y', $data['CheckSysTime']));
+                    $checkTime = mktime(0, 0, 0, intval(date('m', $data['CheckSysTime'])), intval(date('d', $data['CheckSysTime'])) + 1, intval(date('Y', $data['CheckSysTime'])));
 
                     do {
                         $nextEvent = GetWeekplanState($id, $checkTime, true);
 
                         if (($nextEvent['ActionID'] == 0) && ($nextEvent['PreviousActionID'] == 0) && ($nextEvent['NextActionID'] == 0)) {
-                            $checkTime = mktime(0, 0, 0, date('m', $nextEvent['StartSysTime']), date('d', $nextEvent['StartSysTime']) + 1, date('Y', $nextEvent['StartSysTime']));
+                            $checkTime = mktime(0, 0, 0, intval(date('m', $nextEvent['StartSysTime'])), intval(date('d', $nextEvent['StartSysTime'])) + 1, intval(date('Y', $nextEvent['StartSysTime'])));
                         } elseif (($nextEvent['NextActionID'] == 0) && ($nextEvent['PreviousActionID'] == 0)) {
-                            $checkTime = mktime(0, 0, 0, date('m', $nextEvent['StartSysTime']), date('d', $nextEvent['StartSysTime']) + 1, date('Y', $nextEvent['StartSysTime']));
+                            $checkTime = mktime(0, 0, 0, intval(date('m', $nextEvent['StartSysTime'])), intval(date('d', $nextEvent['StartSysTime'])) + 1, intval(date('Y', $nextEvent['StartSysTime'])));
                         } else {
                             $checkTime = $nextEvent['EndSysTime'];
 
