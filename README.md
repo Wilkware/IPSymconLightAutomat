@@ -95,7 +95,7 @@ Setzt die Wartezeit auf 10 Minuten.
 v4.0.20200421
 
 * _NEU_: Zeitplan hinzugefügt
-* _NEU_: Unterstützung für Erstellung einer Variable für den Dauerbetrieb und eines Wochenplans
+* _NEU_: Unterstützung für die Erstellung eines Wochenplans
 * _FIX_: Interne Bibliotheken überarbeitet
 * _FIX_: Dokumentation überarbeitet
 
