@@ -78,7 +78,7 @@ class LightAutomat extends IPSModule
                 if ($eid != 0) {
                     $state = $this->GetWeeklyScheduleInfo($eid);
                     if ($state['WeekPlanActiv'] == 1 && $state['ActionID'] == 2) {
-                        $this->SendDebug('MessageSink', 'Wochenprogramm ist inaktiv!');
+                        $this->SendDebug('MessageSink', 'Wochenprogramm hinterlegt und Zustand ist inaktiv!');
                         break;
                     }
                 }
@@ -109,7 +109,7 @@ class LightAutomat extends IPSModule
             if ($this->ReadPropertyBoolean('OnlyScript') == false) {
                 $mid = $this->ReadPropertyInteger('MotionVariable');
                 if ($mid != 0 && GetValue($mid)) {
-                    $this->SendDebug('TLA_Trigger', 'Bewegungsmelder aktiv, also nochmal!');
+                    $this->SendDebug('Trigger', 'Bewegungsmelder aktiv, also nochmal!');
 
                     return;
                 } else {
@@ -120,10 +120,10 @@ class LightAutomat extends IPSModule
                         //$ret = @HM_WriteValueBoolean($pid, 'STATE', false); //Gerät ausschalten
                         $ret = @RequestAction($sv, false); //Gerät ausschalten
                         if ($ret === false) {
-                            $this->SendDebug('TLA_Trigger', 'Gerät konnte nicht ausgeschalten werden (UNREACH)!');
+                            $this->SendDebug('Trigger', 'Gerät konnte nicht ausgeschalten werden (UNREACH)!');
                         }
                     }
-                    $this->SendDebug('TLA_Trigger', 'StateVariable (#' . $sv . ') auf false geschalten!');
+                    $this->SendDebug('Trigger', 'StateVariable (#' . $sv . ') auf false geschalten!');
                 }
             }
             // Script ausführen
@@ -134,11 +134,11 @@ class LightAutomat extends IPSModule
                         $this->SendDebug('Script Execute: Return Value', $rs);
                     }
                 } else {
-                    $this->SendDebug('TLA_Trigger', 'Script #' . $this->ReadPropertyInteger('ScriptVariable') . ' existiert nicht!');
+                    $this->SendDebug('Trigger', 'Script #' . $this->ReadPropertyInteger('ScriptVariable') . ' existiert nicht!');
                 }
             }
         } else {
-            $this->SendDebug('TLA_Trigger', 'STATE schon FALSE - Timer löschen!');
+            $this->SendDebug('Trigger', 'STATE schon FALSE - Timer löschen!');
         }
         $this->SetTimerInterval('TriggerTimer', 0);
     }
