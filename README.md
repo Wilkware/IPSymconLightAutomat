@@ -60,6 +60,7 @@ Bewegungsvariable                                | Statusvariable eines Bewegung
 Dauerbetrieb                                     | Statusvariable, über welchen der Automat zeitweise deaktiviert werden kann (true = Dauerbetrieb).
 Gleichzeitiges Ausführen eines Scriptes.         | Schalter, ob zusätzlich ein Script ausgeführt werden soll (IPS_ExecScript).
 Skript                                           | Script(auswahl), welches zum Einsatz kommen soll.
+Zeitplan                                         | Wochenprogram, welches den Bewegungsmelder zeitgesteuert aktiviert bzw. deaktiviert.
 Nur Script ausführen - kein Ausschaltvorgang!    | Schalter, ob nur das Script ausgeführt werden soll, kein Schaltvorgang.
 Statusvariable ist eine reine boolsche Variable! | Schalter, ob die Statusvariable über HM-Befehl geschaltet werden soll oder einfach ein nur einfacher boolscher Switch gemacht werden soll.
 
@@ -75,20 +76,23 @@ Die Wartezeit kann auch über ein Textfeld oder Variablenprofil und Script geste
 
 ### 7. PHP-Befehlsreferenz
 
-`void TLA_Trigger(int $InstanzID);`  
+```php
+void TLA_Trigger(int $InstanzID);
+```
+
 Schaltet das Licht (den Actor) aus.  
-Die Funktion liefert keinerlei Rückgabewert.  
+Die Funktion liefert keinerlei Rückgabewert.
 
-Beispiel:  
-`TLA_Trigger(12345);`  
+__Beispiel__: `TLA_Trigger(12345);`
 
-`void TLA_Duration(int $InstanzID, int x);`  
+```php
+void TLA_Duration(int $InstanzID, int x);
+```
+
 Setzt die Wartezeit (Timer) auf die neuen 'x' Minuten.  
 Die Funktion liefert keinerlei Rückgabewert.
 
-Beispiel:  
-`TLA_Duration(12345, 10);`  
-Setzt die Wartezeit auf 10 Minuten.
+__Beispiel__: `TLA_Duration(12345, 10);` Setzt die Wartezeit auf 10 Minuten.
 
 ### 8. Versionshistorie
 
