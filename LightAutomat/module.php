@@ -10,9 +10,6 @@ class LightAutomat extends IPSModule
     use DebugHelper;
     use EventHelper;
 
-    // Variable constant
-    const VARIABLE_NAME = 'Dauerbetrieb';
-    const VARIABLE_IDENT = 'continuous_operation';
     // Schedule constant
     const SCHEDULE_NAME = 'Zeitplan';
     const SCHEDULE_IDENT = 'circuit_diagram';
@@ -75,6 +72,15 @@ class LightAutomat extends IPSModule
                 if ($pid != 0 && GetValue($pid)) {
                     $this->SendDebug('MessageSink', 'Dauerbetrieb ist angeschalten!');
                     break;
+                }
+                // Wochenprogramm auswerten!
+                $eid = $this->ReadPropertyInteger('EventVariable');
+                if ($eid != 0) {
+                    $state = $this->GetWeeklyScheduleInfo($eid);
+                    if ($state['WeekPlanActiv'] == 1 && $state['ActionID'] == 2) {
+                        $this->SendDebug('MessageSink', 'Wochenprogramm ist inaktiv!');
+                        break;
+                    }
                 }
 
                 if ($data[0] == true && $data[1] == true) { // OnChange auf TRUE, d.h. Angeschalten
@@ -149,25 +155,6 @@ class LightAutomat extends IPSModule
     {
         IPS_SetProperty($this->InstanceID, 'Duration', $duration);
         IPS_ApplyChanges($this->InstanceID);
-    }
-
-    /**
-     * This function will be available automatically after the module is imported with the module control.
-     * Using the custom prefix this function will be callable from PHP and JSON-RPC through:
-     *
-     * TLA_CreateVariable($id);
-     *
-     */
-    public function CreateVariable()
-    {
-        $vid = @IPS_GetObjectIDByIdent(self::VARIABLE_IDENT, $this->InstanceID);
-        if ($vid === false) {
-            $vid = IPS_CreateVariable(VARIABLETYPE_BOOLEAN);
-            IPS_SetParent($vid, $this->InstanceID);
-            IPS_SetName($vid, self::VARIABLE_NAME);
-            IPS_SetIdent($vid, self::VARIABLE_IDENT);
-            IPS_SetVariableCustomProfile($vid, '~Switch');
-        }
     }
 
     /**
