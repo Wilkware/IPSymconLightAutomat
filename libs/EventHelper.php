@@ -217,7 +217,7 @@ trait EventHelper
         //Startpunkt wurde zwar gefunden aber die ActionID ist 0 --> vorigen Schaltpunkt suchen
             if (($startPointFound == true) && ($data['ActionID'] == 0)) {
                 do {
-                    $prevEvent = GetWeekplanState($id, $data['StartSysTime'] - 1, true);
+                    $prevEvent = $this->GetWeeklyScheduleInfo($id, $data['StartSysTime'] - 1, true);
 
                     $data['StartSysTime'] = $prevEvent['StartSysTime'];
                     $data['PreviousActionID'] = $prevEvent['ActionID'];
@@ -235,7 +235,7 @@ trait EventHelper
                     $checkTime = $data['StartSysTime'];
 
                     do {
-                        $prevEvent = GetWeekplanState($id, $checkTime - 1, true);
+                        $prevEvent = $this->GetWeeklyScheduleInfo($id, $checkTime - 1, true);
                         $checkTime = $prevEvent['StartSysTime'];
 
                         if (($data['PreviousActionID'] == 0) && ($prevEvent['ActionID'] != 0)) {
@@ -249,7 +249,7 @@ trait EventHelper
             //Startpunkt liegt an einen der Vortage !!
             if ($startPointFound == false) {
                 do {
-                    $prevEvent = GetWeekplanState($id, $data['StartSysTime'] - 1, true);
+                    $prevEvent = $this->GetWeeklyScheduleInfo($id, $data['StartSysTime'] - 1, true);
 
                     if (($prevEvent['ActionID'] == 0) && ($prevEvent['PreviousActionID'] == 0) && ($prevEvent['NextActionID'] == 0)) {
                         $data['StartSysTime'] = mktime(00, 00, 00, intval(date('m', $prevEvent['StartSysTime'])), intval(date('d', $prevEvent['StartSysTime'])), intval(date('Y', $prevEvent['StartSysTime'])));
@@ -277,7 +277,7 @@ trait EventHelper
                     $checkTime = $data['StartSysTime'];
 
                     do {
-                        $prevEvent = GetWeekplanState($id, $checkTime - 1, true);
+                        $prevEvent = $this->GetWeeklyScheduleInfo($id, $checkTime - 1, true);
                         if (($prevEvent['ActionID'] == 0) && ($prevEvent['PreviousActionID'] == 0) && ($prevEvent['NextActionID'] == 0)) {
                             $checkTime = mktime(00, 00, 00, intval(date('m', $prevEvent['StartSysTime'])), intval(date('d', $prevEvent['StartSysTime'])), intval(date('Y', $prevEvent['StartSysTime'])));
                         } else {
@@ -297,7 +297,7 @@ trait EventHelper
                 $checkTime = $data['StartSysTime'];
 
                 do {
-                    $prevEvent = GetWeekplanState($id, $checkTime - 1, true);
+                    $prevEvent = $this->GetWeeklyScheduleInfo($id, $checkTime - 1, true);
 
                     if (($prevEvent['ActionID'] == 0) && ($prevEvent['PreviousActionID'] == 0) && ($prevEvent['NextActionID'] == 0)) {
                         $checkTime = mktime(00, 00, 00, intval(date('m', $prevEvent['StartSysTime'])), intval(date('d', $prevEvent['StartSysTime'])), intval(date('Y', $prevEvent['StartSysTime'])));
@@ -320,7 +320,7 @@ trait EventHelper
                 $checkTime = $data['EndSysTime'];
 
                 do {
-                    $nextEvent = GetWeekplanState($id, $checkTime, true);
+                    $nextEvent = $this->GetWeeklyScheduleInfo($id, $checkTime, true);
 
                     if (($nextEvent['ActionID'] == 0) && ($nextEvent['PreviousActionID'] == 0) && ($nextEvent['NextActionID'] == 0)) {
                         $checkTime = mktime(0, 0, 0, intval(date('m', $nextEvent['StartSysTime'])), intval(date('d', $nextEvent['StartSysTime'])) + 1, intval(date('Y', $nextEvent['StartSysTime'])));
@@ -347,7 +347,7 @@ trait EventHelper
                 $data['EndSysTime'] = mktime(0, 0, 0, intval(date('m', $data['CheckSysTime'])), intval(date('d', $data['CheckSysTime'])) + 1, intval(date('Y', $data['CheckSysTime'])));
 
                 do {
-                    $nextEvent = GetWeekplanState($id, $data['EndSysTime'], true);
+                    $nextEvent = $this->GetWeeklyScheduleInfo($id, $data['EndSysTime'], true);
 
                     if (($nextEvent['ActionID'] == 0) && ($nextEvent['PreviousActionID'] == 0) && ($nextEvent['NextActionID'] == 0)) {
                         $data['EndSysTime'] = mktime(0, 0, 0, intval(date('m', $nextEvent['StartSysTime'])), intval(date('d', $nextEvent['StartSysTime'])) + 1, intval(date('Y', $nextEvent['StartSysTime'])));
@@ -374,7 +374,7 @@ trait EventHelper
                     $checkTime = mktime(0, 0, 0, intval(date('m', $data['CheckSysTime'])), intval(date('d', $data['CheckSysTime'])) + 1, intval(date('Y', $data['CheckSysTime'])));
 
                     do {
-                        $nextEvent = GetWeekplanState($id, $checkTime, true);
+                        $nextEvent = $this->GetWeeklyScheduleInfo($id, $checkTime, true);
 
                         if (($nextEvent['ActionID'] == 0) && ($nextEvent['PreviousActionID'] == 0) && ($nextEvent['NextActionID'] == 0)) {
                             $checkTime = mktime(0, 0, 0, intval(date('m', $nextEvent['StartSysTime'])), intval(date('d', $nextEvent['StartSysTime'])) + 1, intval(date('Y', $nextEvent['StartSysTime'])));
