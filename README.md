@@ -48,7 +48,7 @@ Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer best
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
-* Unter 'Instanz hinzufügen' ist das *Lichtautomat*'*-Modul (Alias: *Treppenautomat*, *Tasterschaltung*) unter dem Hersteller '(Geräte)' aufgeführt.
+* Unter 'Instanz hinzufügen' ist das _Lichtautomat_-Modul (Alias: _Treppenautomat_, _Tasterschaltung_) unter dem Hersteller '(Geräte)' aufgeführt.
 
 __Konfigurationsseite__:
 
