@@ -1,8 +1,8 @@
 # Toolmatic Light Automat (Lichtautomat)
 
 [![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Product](https://img.shields.io/badge/Symcon%20Version-5.1%20%3E-blue.svg)](https://www.symcon.de/produkt/)
-[![Version](https://img.shields.io/badge/Modul%20Version-4.0.20200421-orange.svg)](https://github.com/Wilkware/IPSymconLightAutomat)
+[![Product](https://img.shields.io/badge/Symcon%20Version-5.2-blue.svg)](https://www.symcon.de/produkt/)
+[![Version](https://img.shields.io/badge/Modul%20Version-5.0.20210502-orange.svg)](https://github.com/Wilkware/IPSymconLightAutomat)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Actions](https://github.com/Wilkware/IPSymconLightAutomat/workflows/Check%20Style/badge.svg)](https://github.com/Wilkware/IPSymconLightAutomat/actions)
 
@@ -30,15 +30,16 @@ Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer best
 * Nach eingestellter Zeit wird der Staus wieder zurückgestellt ("STATE" = flase).
 * Sollte das Licht schon vorher manuell aus geschalten worden sein, wird der Timer deaktiviert.
 * Zusätzlich bzw. ausschließlich kann ein Script ausgeführt werden.
-* Dauerbetrieb mittels hinterlegter boolean Variable, wenn **true** wird kein Timer gestartet.
-* Hinterlegung eines Wochenplans zum gezielten Aktivieren bzw. Deaktivierung des Automaten
+* Möglichkeit des manuellen Dauerbetriebes schaltbar über boolesche Variable, wenn **true** wird kein Timer gestartet.
+* Hinterlegung eines Wochenplans zum gezielten Aktivieren bzw. Deaktivierung des Automaten.
 * Modul mit Bewegungsmelder, wenn dieser aktiv ist wird der Timer immer wieder erneuert.
-* Über die Funktion _TLA_Duration(id, minuten)_ kann die Wartezeit via Script (WebFront) gesetzt werden.
+* Möglichkeit der Steuerung der Wartezeit über eigene Laufzeit-Variable (z.B. via WebFront).
 * Statusvariable muss nicht von einer HM-Instanze sein, kann auch einfach eine boolsche Variable sein.
+* Start der Wartezeit bei Aktivierung des Automaten via Wochenplan (Übergang Inaktiv zu Aktiv).
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 5.1
+* IP-Symcon ab Version 5.2
 
 ### 3. Software-Installation
 
@@ -52,27 +53,62 @@ Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer best
 
 __Konfigurationsseite__:
 
+Einstellungsbereich:
+
+> Geräte ...
+
 Name                                             | Beschreibung
 ------------------------------------------------ | ---------------------------------
-Statusvariable                                   | Quellvariable, über welche der Automat getriggert wird. Meistens im Kanal 1 von HomeMatic Geräten zu finden und ist vom Typ boolean und hat den Namen "STATE" (z.B: wenn man die Geräte mit dem HomeMatic Configurator anlegen lässt.).
-Dauer (in Minuten)                               | Zeit, bis das Licht(Aktor) wieder ausgeschaltet werden soll.
+Schaltervariable                                 | Quellvariable, über welche der Automat getriggert wird. Meistens im Kanal 1 von HomeMatic Geräten zu finden und ist vom Typ boolean und hat den Namen "STATE" (z.B: wenn man die Geräte mit dem HomeMatic Configurator anlegen lässt.).
 Bewegungsvariable                                | Statusvariable eines Bewegungsmelders (true = Anwesend; false = Abwesend).
-Dauerbetrieb                                     | Statusvariable, über welchen der Automat zeitweise deaktiviert werden kann (true = Dauerbetrieb).
-Gleichzeitiges Ausführen eines Scriptes.         | Schalter, ob zusätzlich ein Script ausgeführt werden soll (IPS_ExecScript).
-Skript                                           | Script(auswahl), welches zum Einsatz kommen soll.
-Zeitplan                                         | Wochenprogram, welches den Bewegungsmelder zeitgesteuert aktiviert bzw. deaktiviert.
-Nur Script ausführen - kein Ausschaltvorgang!    | Schalter, ob nur das Script ausgeführt werden soll, kein Schaltvorgang.
-Statusvariable ist eine reine boolsche Variable! | Schalter, ob die Statusvariable über HM-Befehl geschaltet werden soll oder einfach ein nur einfacher boolscher Switch gemacht werden soll.
+
+> Zeitsteuerung ...
+
+Name                                             | Beschreibung
+------------------------------------------------ | ---------------------------------
+Zeiteinheit                                      | Bestimmt ob Dauer in Sekunden, Minuten oder Stunden ausgewertet werden soll.
+Einschaltdauer (Vorgabe)                         | Zeitdauer, bis das Licht(Aktor) wieder ausgeschaltet werden soll. Wird bei eigner Variable für Einschaltdauer (siehe Erweiterte Einstellungen) als Vorgabewert/Initialwert benutzt.
+Zeitplan                                         | Wochenprogram, welches den Lichtautomaten zeitgesteuert aktiviert bzw. deaktiviert.
+
+> Erweiterte Einstellungen ...
+
+Name                                             | Beschreibung
+------------------------------------------------ | ---------------------------------
+Gleichzeitiges Ausführen eines Scriptes          | Auswahl eines Skriptes, welches zusätzlich ausgeführt werden soll (IPS_ExecScript).
+Schaltervariable ist eine reine boolsche Variable| Schalter, ob die Statusvariable über RequestAction-Befehl geschaltet werden soll oder ob nur ein boolscher Switch gemacht werden soll.
+Starte Einschaltdauer bei eingeschaltem Licht und Aktivierung über Schaltplan| Schalter, ob nach Aktivierung über Wochenplan der Automat starten soll.
+Variable für Einstellung der Einschaltdauer anlegen | Schalter, ob eine Statusvariable für Einschaltdauer angelegt werden soll.
+Variable für Aktivierung des Dauerbetriebes anlegen | Schalter, ob eine Statusvariable für Dauerbetrieb angelegt werden soll.
+
+_Aktionsbereich:_
+
+Aktion                  | Beschreibung
+----------------------- | ---------------------------------
+ZEITPLAN HINZUFÜGEN     | Es wird ein Wochenplan mit 2 Zuständen (Aktiv & Inaktiv) angelegt und in den Einstellung hinterlegt.
 
 ### 5. Statusvariablen und Profile
 
-Es werden keine zusätzlichen Profile benötigt.
+Die Statusvariablen werden unter Berücksichtigung der erweiterten Einstellungen angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
+
+Name                 | Typ          | Beschreibung
+-------------------- | ------------ | ----------------
+Dauerbetrieb         | Boolean      | Ein- und Ausschalten des Dauerbetriebes (z.B. bei Besuch oder Party's)
+Einschaltdauer       | Integer      | Dauer der Wartezeit in Abhängigkeit der eingestellten Zeiteinheit
+Zeitplan             | (Wochenplan) | Einstellen der Zeitpunkte für Aktivieren bzw. Deaktivieren des Automaten
+
+Folgende Profile werden angelegt:
+
+Name                 | Typ       | Beschreibung
+-------------------- | --------- | ----------------
+TLA.Seconds          | Integer   | Zeitraum von 1 bis 59 Sekunden
+TLA.Minutes          | Integer   | Zeitraum von 1 bis 59 Minuten
+TLA.Hours            | Integer   | Zeitraum von 1 bis 23 Stunden
 
 ### 6. WebFront
 
 Es ist keine weitere Steuerung oder gesonderte Darstellung integriert.  
-Der Dauerbetrieb kann über einen einfachen Switch im WF realsiert werden.  
-Die Wartezeit kann auch über ein Textfeld oder Variablenprofil und Script gesteuert (TLA_Duration) werden.
+Der Dauerbetrieb kann über die Statusvariable "Dauerbetrieb" im WebFront realsiert werden.  
+Die Wartezeit kann auch über die Statusvariable "Einschaltdauer" im Webfront realisiert werden.
 
 ### 7. PHP-Befehlsreferenz
 
@@ -86,15 +122,33 @@ Die Funktion liefert keinerlei Rückgabewert.
 __Beispiel__: `TLA_Trigger(12345);`
 
 ```php
-void TLA_Duration(int $InstanzID, int x);
+void TLA_Schedule(int $InstanzID, int x);
 ```
 
-Setzt die Wartezeit (Timer) auf die neuen 'x' Minuten.  
+Wird vom Wochenplan aufgerufen und dient der internen Prozessverarbeitung.  
 Die Funktion liefert keinerlei Rückgabewert.
 
-__Beispiel__: `TLA_Duration(12345, 10);` Setzt die Wartezeit auf 10 Minuten.
+__Beispiel__: `TLA_Schedule(12345, 1);`
+
+```php
+void TLA_CreateSchedule(int $InstanzID);
+```
+
+Wird vom Konfigurationsformular aufgerufen und erzeugt den Wochenplan.  
+Die Funktion liefert keinerlei Rückgabewert.
+
+__Beispiel__: `TLA_CreateSchedule(12345);`
 
 ### 8. Versionshistorie
+
+v5.0.20210502
+
+* _NEU_: Umstellung auf Statusvariablen für Einschaltdauer und Dauerbetrieb
+* _NEU_: Wartezeit jetzt frei konfigurierbar (Sekunden, Minuten oder Stunden)
+* _NEU_: Check ob Licht nach Aktivierung des Automaten über Wochenplan ausgeschalten werden soll
+* _FIX_: Funktion "TLA_Duration" entfernt (wegen Nutzung von IPS_SetProperty/ IPS_ApplyChanges)
+* _FIX_: Konfigurationsformular vereinheitlicht bzw. vereinfacht
+* _FIX_: Interne Bibliotheken überarbeitet
 
 v4.0.20200421
 
