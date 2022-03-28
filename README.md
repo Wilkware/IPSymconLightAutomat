@@ -22,16 +22,14 @@ Das Modul Lichtautomat (Light Automat) überwacht und schaltet das Licht automat
 ### 1. Funktionsumfang
 
 * Überwacht und schaltet das Licht automatisch nach einer bestimmten Zeit wieder aus.
-* Dabei wird der Schaltstatus eines HomeMatic Tasters (z.B. HM-LC-Sw1PBU-FM) überwacht.
 * Bei Variablenänderung der Statusvariable (STATE)) wird ein Timer gestartet.
 * Nach eingestellter Zeit wird der Staus wieder zurückgestellt ("STATE" = flase).
 * Sollte das Licht schon vorher manuell aus geschalten worden sein, wird der Timer deaktiviert.
 * Zusätzlich bzw. ausschließlich kann ein Script ausgeführt werden.
-* Möglichkeit des manuellen Dauerbetriebes schaltbar über boolesche Variable, wenn __true__ wird kein Timer gestartet.
+* Möglichkeit des manuellen Dauerbetriebes schaltbar über eine boolesche Variable, wenn __true__ wird kein Timer gestartet.
 * Hinterlegung eines Wochenplans zum gezielten Aktivieren bzw. Deaktivierung des Automaten.
-* Modul mit Bewegungsmelder, wenn dieser aktiv ist wird der Timer immer wieder erneuert.
+* Berücksichtigung von Bewegungsmelder, wenn dieser aktiv ist wird der Timer immer wieder erneuert.
 * Möglichkeit der Steuerung der Wartezeit über eigene Laufzeit-Variable (z.B. via WebFront).
-* Statusvariable muss nicht von einer HM-Instanze sein, kann auch einfach eine boolsche Variable sein.
 * Start der Wartezeit bei Aktivierung des Automaten via Wochenplan (Übergang Inaktiv zu Aktiv).
 
 ### 2. Voraussetzungen
