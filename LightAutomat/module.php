@@ -14,20 +14,20 @@ class LightAutomat extends IPSModule
     use VariableHelper;
 
     // Schedule constant
-    const SCHEDULE_ON = 1;
-    const SCHEDULE_OFF = 2;
-    const SCHEDULE_NAME = 'Zeitplan';
-    const SCHEDULE_IDENT = 'circuit_diagram';
-    const SCHEDULE_SWITCH = [
+    public const SCHEDULE_ON = 1;
+    public const SCHEDULE_OFF = 2;
+    public const SCHEDULE_NAME = 'Zeitplan';
+    public const SCHEDULE_IDENT = 'circuit_diagram';
+    public const SCHEDULE_SWITCH = [
         self::SCHEDULE_ON  => ['Aktive', 0x00FF00, "IPS_RequestAction(\$_IPS['TARGET'], 'circuit_diagram', \$_IPS['ACTION']);"],
         self::SCHEDULE_OFF => ['Inaktive', 0xFF0000, "IPS_RequestAction(\$_IPS['TARGET'], 'circuit_diagram', \$_IPS['ACTION']);"],
     ];
     // Time Unites constant
-    const TIME_SECONDS = 0;
-    const TIME_MINUTES = 1;
-    const TIME_HOURS = 2;
-    const TIME_CLOCK = 3;
-    const TIME_UNIT = [
+    public const TIME_SECONDS = 0;
+    public const TIME_MINUTES = 1;
+    public const TIME_HOURS = 2;
+    public const TIME_CLOCK = 3;
+    public const TIME_UNIT = [
         self::TIME_SECONDS  => ['TLA.Seconds', ' seconds', 1, 59, 1],
         self::TIME_MINUTES  => ['TLA.Minutes', ' minutes', 1, 59, 60],
         self::TIME_HOURS    => ['TLA.Hours', ' hours', 1, 23, 3600],
@@ -54,7 +54,7 @@ class LightAutomat extends IPSModule
         $this->RegisterPropertyBoolean('CheckPermanent', true);
         // Profile
         foreach (self::TIME_UNIT as $key => $value) {
-            if($key != self::TIME_CLOCK) {
+            if ($key != self::TIME_CLOCK) {
                 $this->RegisterProfile(vtInteger, $value[0], 'Clock', '', $this->Translate($value[1]), $value[2], $value[3], 1, 0, null);
             }
         }
@@ -84,7 +84,7 @@ class LightAutomat extends IPSModule
         // Debug output
         $this->SendDebug(__FUNCTION__, 'unit=' . $unit);
         // Set duration inputs
-        if($unit < self::TIME_CLOCK) {
+        if ($unit < self::TIME_CLOCK) {
             // Check duration
             $suf = $this->Translate(self::TIME_UNIT[$unit][1]);
             $min = self::TIME_UNIT[$unit][2];
@@ -180,11 +180,11 @@ class LightAutomat extends IPSModule
         $this->MaintainVariable('duty_cycle', $this->Translate('Duty cycle'), vtInteger, self::TIME_UNIT[$unit][0], 1, $duration);
         $this->SendDebug(__FUNCTION__, 'Create duration: ' . $duration . ' Create perament: ' . $permanent, 0);
         if ($duration) {
-            if($unit < self::TIME_CLOCK) {
+            if ($unit < self::TIME_CLOCK) {
                 $time = $this->ReadPropertyInteger('Duration');
                 $this->SetValueInteger('duty_cycle', $time);
             } else {
-                $time =  json_decode($this->ReadPropertyString('Time'), true);
+                $time = json_decode($this->ReadPropertyString('Time'), true);
                 $this->SetValueInteger('duty_cycle', 82800 + (($time['hour'] * 3600) + ($time['minute'] * 60) + $time['second']));
             }
             $this->EnableAction('duty_cycle');
@@ -271,7 +271,36 @@ class LightAutomat extends IPSModule
     }
 
     /**
-     * Trigger Timer 
+     * Import death days data.
+     *
+     * @param string $value unit and value of duration.
+     */
+    protected function OnTimeUnit($value)
+    {
+        $this->SendDebug(__FUNCTION__, $value);
+        $data = unserialize($value);
+        if ($data['unit'] < self::TIME_CLOCK) {
+            // min/max/suffix
+            $suf = $this->Translate(self::TIME_UNIT[$data['unit']][1]);
+            $min = self::TIME_UNIT[$data['unit']][2];
+            $max = self::TIME_UNIT[$data['unit']][3];
+            // Set min/max/suffix
+            $this->UpdateFormField('Duration', 'minimum', $min);
+            $this->UpdateFormField('Duration', 'maximum', $max);
+            $this->UpdateFormField('Duration', 'suffix', $suf);
+            // Check Value
+            $value = $data['value'];
+            if ($value > $max) {
+                $value = 10; //default: 10
+                $this->UpdateFormField('Duration', 'value', $value);
+            }
+        }
+        $this->UpdateFormField('Duration', 'visible', ($data['unit'] != self::TIME_CLOCK));
+        $this->UpdateFormField('Time', 'visible', ($data['unit'] == self::TIME_CLOCK));
+    }
+
+    /**
+     * Trigger Timer
      *
      */
     private function Trigger()
@@ -294,8 +323,7 @@ class LightAutomat extends IPSModule
                     }
                     if ($ret === false) {
                         $this->LogMessage('Device could not be switched (UNREACH)!');
-                    }
-                    else {
+                    } else {
                         $this->SendDebug(__FUNCTION__, 'StateVariable (#' . $sv . ') switched to FALSE!');
                     }
                 }
@@ -316,7 +344,7 @@ class LightAutomat extends IPSModule
     }
 
     /**
-     * Schedule Event 
+     * Schedule Event
      *
      * @param integer $vaue Action value (ON=1, OFF=2)
      */
@@ -372,7 +400,7 @@ class LightAutomat extends IPSModule
                 $time = $this->ReadPropertyInteger('Duration');
                 $interval = 1000 * self::TIME_UNIT[$unit][4] * $time;
             } else {
-                $time =  json_decode($this->ReadPropertyString('Time'), true);
+                $time = json_decode($this->ReadPropertyString('Time'), true);
                 $interval = 1000 * (($time[0] * 3600) + ($time[1] * 60) + $time[2]);
             }
         }
@@ -390,34 +418,5 @@ class LightAutomat extends IPSModule
         if ($eid !== false) {
             $this->UpdateFormField('EventVariable', 'value', $eid);
         }
-    }
-
-    /**
-     * Import death days data.
-     *
-     * @param string $value unit and value of duration.
-     */
-    protected function OnTimeUnit($value)
-    {
-        $this->SendDebug(__FUNCTION__, $value);
-        $data = unserialize($value);
-        if ($data['unit'] < self::TIME_CLOCK) {
-            // min/max/suffix
-            $suf = $this->Translate(self::TIME_UNIT[$data['unit']][1]);
-            $min = self::TIME_UNIT[$data['unit']][2];
-            $max = self::TIME_UNIT[$data['unit']][3];
-            // Set min/max/suffix
-            $this->UpdateFormField('Duration', 'minimum', $min);
-            $this->UpdateFormField('Duration', 'maximum', $max);
-            $this->UpdateFormField('Duration', 'suffix', $suf);
-            // Check Value
-            $value = $data['value'];
-            if ($value > $max) {
-                $value = 10; //default: 10
-                $this->UpdateFormField('Duration', 'value', $value);
-            }
-        }
-        $this->UpdateFormField('Duration', 'visible', ($data['unit'] != self::TIME_CLOCK));
-        $this->UpdateFormField('Time', 'visible', ($data['unit'] == self::TIME_CLOCK));
     }
 }
