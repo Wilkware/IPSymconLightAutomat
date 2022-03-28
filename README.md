@@ -111,7 +111,7 @@ v3.0.20220320
 * _NEU_: Kompatibilität auf IPS 6.0 hoch gesetzt
 * _NEU_: Konfigurationsdialog überarbeitet (v6 Möglichkeiten genutzt)
 * _NEU_: Konfiguration der Zeitsteuerung überarbeitet
-* _NEU_: Einschaltdauer kann über eine frei wählbare Uhrzeit eingestellt werden (Kompination von Stunden, Minuten und Sekunden)
+* _NEU_: Einschaltdauer kann über eine frei wählbare Uhrzeit eingestellt werden (Kombination von Stunden, Minuten und Sekunden)
 * _NEU_: Eine reine boolesche Schaltvariable wird automatisch erkannt
 * _NEU_: Referenzieren der Gerätevariablen hinzugefügt (sicheres Löschen)
 * _FIX_: Public Funktions `TLA_Trigger`, `TLA_Schedule` und `TLA_CreateSchedule` wegen neuer Prozessverarbeitung entfernt
@@ -149,14 +149,14 @@ v3.1.20170120
 
 v3.0.20170109
 
-* _NEU_: Dauerbetrieb miitels hinterlegter boolean Variable, wenn _true_ wird kein Timer gestartet.
+* _NEU_: Dauerbetrieb miitels hinterlegter booleschen Variable, wenn _true_ wird kein Timer gestartet.
 * _NEU_: Modul mit Bewegungsmelder, wenn dieser aktiv ist wird der Timer immer wieder erneuert.
-* _NEU_: Über die Funktion _TLA_Duration(id, minuten)_ kann die Wartezeit via Script (WebFront) gesetzt werden.
+* _NEU_: Über die Funktion _TLA_Duration(id, minuten)_ kann die Wartezeit via Skript (WebFront) gesetzt werden.
 
 v2.0.20170101
 
 * _FIX_: Umstellung auf Nachrichten (RegisterMessage/MessageSink)
-* _NEU_: Erweiterung zum Ausführen eines Scriptes
+* _NEU_: Erweiterung zum Ausführen eines Skriptes
 
 v1.0.20161220
 
