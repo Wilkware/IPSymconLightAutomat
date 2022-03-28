@@ -106,7 +106,7 @@ Ein direkter Aufruf von öffentlichen Funktionen ist nicht notwendig!
 
 ### 8. Versionshistorie
 
-v3.0.20220320
+v6.0.20220320
 
 * _NEU_: Kompatibilität auf IPS 6.0 hoch gesetzt
 * _NEU_: Konfigurationsdialog überarbeitet (v6 Möglichkeiten genutzt)
