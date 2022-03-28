@@ -1,15 +1,12 @@
-# Toolmatic Light Automat (Lichtautomat)
+# Lichtautomat (Light Automat)
 
 [![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Product](https://img.shields.io/badge/Symcon%20Version-5.2-blue.svg)](https://www.symcon.de/produkt/)
-[![Version](https://img.shields.io/badge/Modul%20Version-5.0.20210502-orange.svg)](https://github.com/Wilkware/IPSymconLightAutomat)
+[![Product](https://img.shields.io/badge/Symcon%20Version-6.0-blue.svg)](https://www.symcon.de/produkt/)
+[![Version](https://img.shields.io/badge/Modul%20Version-6.0.20220401-orange.svg)](https://github.com/Wilkware/IPSymconLightAutomat)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Actions](https://github.com/Wilkware/IPSymconLightAutomat/workflows/Check%20Style/badge.svg)](https://github.com/Wilkware/IPSymconLightAutomat/actions)
 
-Die *Toolmatic Bibliothek* ist eine kleine Tool-Sammlung im Zusammenhang mit HomeMatic/IP Geräten.  
-Hauptsächlich beinhaltet sie kleine Erweiterung zur Automatisierung von Aktoren oder erleichtert das Steuern von Geräten bzw. bietet mehr Komfort bei der Bedienung.  
-  
-Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer bestimmten Zeit wieder aus.
+Das Modul Lichtautomat (Light Automat) überwacht und schaltet das Licht automatisch nach einer bestimmten Zeit wieder aus.
 
 ## Inhaltverzeichnis
 
@@ -30,7 +27,7 @@ Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer best
 * Nach eingestellter Zeit wird der Staus wieder zurückgestellt ("STATE" = flase).
 * Sollte das Licht schon vorher manuell aus geschalten worden sein, wird der Timer deaktiviert.
 * Zusätzlich bzw. ausschließlich kann ein Script ausgeführt werden.
-* Möglichkeit des manuellen Dauerbetriebes schaltbar über boolesche Variable, wenn **true** wird kein Timer gestartet.
+* Möglichkeit des manuellen Dauerbetriebes schaltbar über boolesche Variable, wenn __true__ wird kein Timer gestartet.
 * Hinterlegung eines Wochenplans zum gezielten Aktivieren bzw. Deaktivierung des Automaten.
 * Modul mit Bewegungsmelder, wenn dieser aktiv ist wird der Timer immer wieder erneuert.
 * Möglichkeit der Steuerung der Wartezeit über eigene Laufzeit-Variable (z.B. via WebFront).
@@ -39,11 +36,11 @@ Der *Lichtautomat* überwacht und schaltet das Licht automatisch nach einer best
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 5.2
+* IP-Symcon ab Version 6.0
 
 ### 3. Software-Installation
 
-* Über den Modul Store das Modul *Toolmatic Light Automat* installieren.
+* Über den Modul Store das Modul _Lichtautomat_ installieren.
 * Alternativ Über das Modul-Control folgende URL hinzufügen.  
 `https://github.com/Wilkware/IPSymconLightAutomat` oder `git://github.com/Wilkware/IPSymconLightAutomat.git`
 
@@ -66,25 +63,20 @@ Bewegungsvariable                                | Statusvariable eines Bewegung
 
 Name                                             | Beschreibung
 ------------------------------------------------ | ---------------------------------
-Zeiteinheit                                      | Bestimmt ob Dauer in Sekunden, Minuten oder Stunden ausgewertet werden soll.
-Einschaltdauer (Vorgabe)                         | Zeitdauer, bis das Licht(Aktor) wieder ausgeschaltet werden soll. Wird bei eigner Variable für Einschaltdauer (siehe Erweiterte Einstellungen) als Vorgabewert/Initialwert benutzt.
+Zeiteinheit                                      | Bestimmt ob Dauer in Sekunden, Minuten, Stunden oder Uhrzeit (freie Zeitwahl) ausgewertet werden soll.
+Einschaltdauer                                   | Zeitdauer, bis das Licht(Aktor) wieder ausgeschaltet werden soll. Wird bei eigner Variable für Einschaltdauer (siehe Erweiterte Einstellungen) als Vorgabewert/Initialwert benutzt.
 Zeitplan                                         | Wochenprogram, welches den Lichtautomaten zeitgesteuert aktiviert bzw. deaktiviert.
+ZEITPLAN HINZUFÜGEN                              | Button zum Erzeugen und Hinzufügen eines Wochenprogrammes.
 
 > Erweiterte Einstellungen ...
 
 Name                                             | Beschreibung
 ------------------------------------------------ | ---------------------------------
 Gleichzeitiges Ausführen eines Scriptes          | Auswahl eines Skriptes, welches zusätzlich ausgeführt werden soll (IPS_ExecScript).
-Schaltervariable ist eine reine boolsche Variable| Schalter, ob die Statusvariable über RequestAction-Befehl geschaltet werden soll oder ob nur ein boolscher Switch gemacht werden soll.
-Starte Einschaltdauer bei eingeschaltem Licht und Aktivierung über Schaltplan| Schalter, ob nach Aktivierung über Wochenplan der Automat starten soll.
+Nur Script ausführen - kein Ausschaltvorgang     | Schalter, ob nur das Script ausgeführt werden soll.
+Starte Einschaltdauer bei eingeschaltem Licht und Aktivierung über Schaltplan | Schalter, ob nach Aktivierung über Wochenplan der Automat starten soll.
 Variable für Einstellung der Einschaltdauer anlegen | Schalter, ob eine Statusvariable für Einschaltdauer angelegt werden soll.
 Variable für Aktivierung des Dauerbetriebes anlegen | Schalter, ob eine Statusvariable für Dauerbetrieb angelegt werden soll.
-
-_Aktionsbereich:_
-
-Aktion                  | Beschreibung
------------------------ | ---------------------------------
-ZEITPLAN HINZUFÜGEN     | Es wird ein Wochenplan mit 2 Zuständen (Aktiv & Inaktiv) angelegt und in den Einstellung hinterlegt.
 
 ### 5. Statusvariablen und Profile
 
@@ -112,34 +104,21 @@ Die Wartezeit kann auch über die Statusvariable "Einschaltdauer" im Webfront re
 
 ### 7. PHP-Befehlsreferenz
 
-```php
-void TLA_Trigger(int $InstanzID);
-```
-
-Schaltet das Licht (den Actor) aus.  
-Die Funktion liefert keinerlei Rückgabewert.
-
-__Beispiel__: `TLA_Trigger(12345);`
-
-```php
-void TLA_Schedule(int $InstanzID, int x);
-```
-
-Wird vom Wochenplan aufgerufen und dient der internen Prozessverarbeitung.  
-Die Funktion liefert keinerlei Rückgabewert.
-
-__Beispiel__: `TLA_Schedule(12345, 1);`
-
-```php
-void TLA_CreateSchedule(int $InstanzID);
-```
-
-Wird vom Konfigurationsformular aufgerufen und erzeugt den Wochenplan.  
-Die Funktion liefert keinerlei Rückgabewert.
-
-__Beispiel__: `TLA_CreateSchedule(12345);`
+Ein direkter Aufruf von öffentlichen Funktionen ist nicht notwendig!
 
 ### 8. Versionshistorie
+
+v3.0.20220320
+
+* _NEU_: Kompatibilität auf IPS 6.0 hoch gesetzt
+* _NEU_: Konfigurationsdialog überarbeitet (v6 Möglichkeiten genutzt)
+* _NEU_: Konfiguration der Zeitsteuerung überarbeitet
+* _NEU_: Einschaltdauer kann über eine frei wählbare Uhrzeit eingestellt werden (Kompination von Stunden, Minuten und Sekunden)
+* _NEU_: Eine reine boolesche Schaltvariable wird automatisch erkannt
+* _NEU_: Referenzieren der Gerätevariablen hinzugefügt (sicheres Löschen)
+* _FIX_: Public Funktions `TLA_Trigger`, `TLA_Schedule` und `TLA_CreateSchedule` wegen neuer Prozessverarbeitung entfernt
+* _FIX_: Interne Bibliotheken erweitert und vereinheitlicht
+* _FIX_: Markdown der Dokumentation überarbeitet
 
 v5.0.20210502
 
@@ -187,14 +166,18 @@ v1.0.20161220
 
 ## Entwickler
 
-* Heiko Wilknitz ([@wilkware](https://github.com/wilkware))
+Seit nunmehr über 10 Jahren fasziniert mich das Thema Haussteuerung. In den letzten Jahren betätige ich mich auch intensiv in der IP-Symcon Community und steuere dort verschiedenste Skript und Module bei. Ihr findet mich dort unter dem Namen @pitti ;-)
+
+[![GitHub](https://img.shields.io/badge/GitHub-@wilkware-181717.svg?style=for-the-badge&logo=github)](https://wilkware.github.io/)
 
 ## Spenden
 
-Die Software ist für die nicht kommzerielle Nutzung kostenlos, Schenkungen als Unterstützung für den Entwickler bitte hier:
+Die Software ist für die nicht kommerzielle Nutzung kostenlos, über eine Spende bei Gefallen des Moduls würde ich mich freuen.
 
-[![License](https://img.shields.io/badge/Einfach%20spenden%20mit-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8816166)
+[![PayPal](https://img.shields.io/badge/PayPal-spenden-00457C.svg?style=for-the-badge&logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8816166)
 
 ## Lizenz
 
-[![Licence](https://licensebuttons.net/i/l/by-nc-sa/transparent/00/00/00/88x31-e.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 4.0 International
+
+[![Licence](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-EF9421.svg?style=for-the-badge&logo=creativecommons)](https://creativecommons.org/licenses/by-nc-sa/4.0/)

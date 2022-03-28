@@ -1,9 +1,12 @@
 {
-  "id": "{6097CE08-ABB9-85EF-60A8-91BDEAE9F4B8}",
-  "author": "Wilkware (@Pitti)",
-  "name": "Toolmatic Light Automat",
-  "url": "https://github.com/Wilkware",
-  "version": "5.0",
-  "build": 20210502,
-  "date": 1619949600
+    "id": "{6097CE08-ABB9-85EF-60A8-91BDEAE9F4B8}",
+    "name": "Toolmatic Light Automat",
+    "author": "Wilkware (@Pitti)",
+    "url": "https://wilkware.de",
+    "compatibility": {
+        "version": "6.0"
+    },
+    "version": "6.0",
+    "build": 20220401,
+    "date": 1648807200
 }

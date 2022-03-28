@@ -11,6 +11,7 @@ class LightAutomat extends IPSModule
     use DebugHelper;
     use EventHelper;
     use ProfileHelper;
+    use VariableHelper;
 
     // Schedule constant
     const SCHEDULE_ON = 1;
@@ -18,17 +19,19 @@ class LightAutomat extends IPSModule
     const SCHEDULE_NAME = 'Zeitplan';
     const SCHEDULE_IDENT = 'circuit_diagram';
     const SCHEDULE_SWITCH = [
-        self::SCHEDULE_ON  => ['Aktive', 0x00FF00, "TLA_Schedule(\$_IPS['TARGET'], \$_IPS['ACTION']);"],
-        self::SCHEDULE_OFF => ['Inaktive', 0xFF0000, "TLA_Schedule(\$_IPS['TARGET'], \$_IPS['ACTION']);"],
+        self::SCHEDULE_ON  => ['Aktive', 0x00FF00, "IPS_RequestAction(\$_IPS['TARGET'], 'circuit_diagram', \$_IPS['ACTION']);"],
+        self::SCHEDULE_OFF => ['Inaktive', 0xFF0000, "IPS_RequestAction(\$_IPS['TARGET'], 'circuit_diagram', \$_IPS['ACTION']);"],
     ];
     // Time Unites constant
     const TIME_SECONDS = 0;
     const TIME_MINUTES = 1;
     const TIME_HOURS = 2;
+    const TIME_CLOCK = 3;
     const TIME_UNIT = [
         self::TIME_SECONDS  => ['TLA.Seconds', ' seconds', 1, 59, 1],
         self::TIME_MINUTES  => ['TLA.Minutes', ' minutes', 1, 59, 60],
         self::TIME_HOURS    => ['TLA.Hours', ' hours', 1, 23, 3600],
+        self::TIME_CLOCK    => ['~UnixTimestampTime', '', 1, 23, 82800],
     ];
 
     public function Create()
@@ -41,16 +44,22 @@ class LightAutomat extends IPSModule
         // Time Control ...
         $this->RegisterPropertyInteger('TimeUnit', 1);
         $this->RegisterPropertyInteger('Duration', 10);
+        $this->RegisterPropertyString('Time', '{"hour":0,"minute":1,"second":0}');
         $this->RegisterPropertyInteger('EventVariable', 0);
         // Advanced Settings ...
         $this->RegisterPropertyInteger('ScriptVariable', 0);
         $this->RegisterPropertyBoolean('OnlyScript', false);
-        $this->RegisterPropertyBoolean('OnlyBool', false);
         $this->RegisterPropertyBoolean('CheckSchedule', true);
         $this->RegisterPropertyBoolean('CheckDuration', true);
         $this->RegisterPropertyBoolean('CheckPermanent', true);
+        // Profile
+        foreach (self::TIME_UNIT as $key => $value) {
+            if($key != self::TIME_CLOCK) {
+                $this->RegisterProfile(vtInteger, $value[0], 'Clock', '', $this->Translate($value[1]), $value[2], $value[3], 1, 0, null);
+            }
+        }
         // Timer
-        $this->RegisterTimer('TriggerTimer', 0, "TLA_Trigger(\$_IPS['TARGET']);");
+        $this->RegisterTimer('TLA.Timer', 0, 'IPS_RequestAction(' . $this->InstanceID . ', "delay_trigger", "");');
     }
 
     /**
@@ -68,20 +77,26 @@ class LightAutomat extends IPSModule
      */
     public function GetConfigurationForm()
     {
+        // Get Form
+        $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
         // Read setup
         $unit = $this->ReadPropertyInteger('TimeUnit');
         // Debug output
         $this->SendDebug(__FUNCTION__, 'unit=' . $unit);
-        // Check duration
-        $suf = $this->Translate(self::TIME_UNIT[$unit][1]);
-        $min = self::TIME_UNIT[$unit][2];
-        $max = self::TIME_UNIT[$unit][3];
-        // Get Form
-        $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
-        // Set min/max/suffix
-        $form['elements'][3]['items'][0]['items'][1]['minimum'] = $min;
-        $form['elements'][3]['items'][0]['items'][1]['maximum'] = $max;
-        $form['elements'][3]['items'][0]['items'][1]['suffix'] = $suf;
+        // Set duration inputs
+        if($unit < self::TIME_CLOCK) {
+            // Check duration
+            $suf = $this->Translate(self::TIME_UNIT[$unit][1]);
+            $min = self::TIME_UNIT[$unit][2];
+            $max = self::TIME_UNIT[$unit][3];
+            // Set min/max/suffix
+            $form['elements'][3]['items'][0]['items'][1]['minimum'] = $min;
+            $form['elements'][3]['items'][0]['items'][1]['maximum'] = $max;
+            $form['elements'][3]['items'][0]['items'][1]['suffix'] = $suf;
+            $form['elements'][3]['items'][0]['items'][1]['visible'] = true;
+        } else {
+            $form['elements'][3]['items'][0]['items'][2]['visible'] = true;
+        }
         // Debug output
         //$this->SendDebug(__FUNCTION__, $form);
         return json_encode($form);
@@ -89,15 +104,70 @@ class LightAutomat extends IPSModule
 
     public function ApplyChanges()
     {
-        if ($this->ReadPropertyInteger('StateVariable') != 0) {
-            $this->UnregisterMessage($this->ReadPropertyInteger('StateVariable'), VM_UPDATE);
-        }
         //Never delete this line!
         parent::ApplyChanges();
-        // Profile
-        foreach (self::TIME_UNIT as $key => $value) {
-            $this->RegisterProfile(vtInteger, $value[0], 'Clock', '', $this->Translate($value[1]), $value[2], $value[3], 1, 0, null);
+
+        //Delete all references in order to readd them
+        foreach ($this->GetReferenceList() as $referenceID) {
+            $this->UnregisterReference($referenceID);
         }
+
+        //Delete all registrations in order to readd them
+        foreach ($this->GetMessageList() as $senderID => $messages) {
+            foreach ($messages as $message) {
+                $this->UnregisterMessage($senderID, $message);
+            }
+        }
+
+        //Register references
+        $variable = $this->ReadPropertyInteger('StateVariable');
+        if (IPS_VariableExists($variable)) {
+            $this->RegisterReference($variable);
+        }
+        $variable = $this->ReadPropertyInteger('MotionVariable');
+        if (IPS_VariableExists($variable)) {
+            $this->RegisterReference($variable);
+        }
+        $event = $this->ReadPropertyInteger('EventVariable');
+        if (IPS_EventExists($event)) {
+            $this->RegisterReference($event);
+        }
+        $script = $this->ReadPropertyInteger('ScriptVariable');
+        if (IPS_ScriptExists($script)) {
+            $this->RegisterReference($script);
+        }
+
+        //Safty check
+        $variable = $this->ReadPropertyInteger('StateVariable');
+        if (($variable > 0) && !IPS_VariableExists($variable)) {
+            $this->SendDebug(__FUNCTION__, 'StateVariable: ' . $variable);
+            $this->SetStatus(104);
+            return;
+        }
+        $variable = $this->ReadPropertyInteger('MotionVariable');
+        if (($variable > 0) && !IPS_VariableExists($variable)) {
+            $this->SendDebug(__FUNCTION__, 'MotionVariable: ' . $variable);
+            $this->SetStatus(104);
+            return;
+        }
+        $event = $this->ReadPropertyInteger('EventVariable');
+        if (($event > 0) && !IPS_EventExists($event)) {
+            $this->SendDebug(__FUNCTION__, 'EventVariable: ' . $event);
+            $this->SetStatus(104);
+            return;
+        }
+        $script = $this->ReadPropertyInteger('ScriptVariable');
+        if (($script > 0) && !IPS_ScriptExists($script)) {
+            $this->SendDebug(__FUNCTION__, 'ScriptVariable: ' . $script);
+            $this->SetStatus(104);
+            return;
+        }
+
+        //Register update messages = Create our trigger
+        if (IPS_VariableExists($this->ReadPropertyInteger('StateVariable'))) {
+            $this->RegisterMessage($this->ReadPropertyInteger('StateVariable'), VM_UPDATE);
+        }
+
         // Maintain variables
         $permanent = $this->ReadPropertyBoolean('CheckPermanent');
         $this->MaintainVariable('continuous_operation', $this->Translate('Continuous operation'), vtBoolean, '~Switch', 0, $permanent);
@@ -106,17 +176,18 @@ class LightAutomat extends IPSModule
             $this->EnableAction('continuous_operation');
         }
         $duration = $this->ReadPropertyBoolean('CheckDuration');
-        $timeunit = $this->ReadPropertyInteger('TimeUnit');
-        $this->MaintainVariable('duty_cycle', $this->Translate('Duty cycle'), vtInteger, self::TIME_UNIT[$timeunit][0], 1, $duration);
+        $unit = $this->ReadPropertyInteger('TimeUnit');
+        $this->MaintainVariable('duty_cycle', $this->Translate('Duty cycle'), vtInteger, self::TIME_UNIT[$unit][0], 1, $duration);
         $this->SendDebug(__FUNCTION__, 'Create duration: ' . $duration . ' Create perament: ' . $permanent, 0);
         if ($duration) {
-            $time = $this->ReadPropertyInteger('Duration');
-            $this->SetValueInteger('duty_cycle', $time);
+            if($unit < self::TIME_CLOCK) {
+                $time = $this->ReadPropertyInteger('Duration');
+                $this->SetValueInteger('duty_cycle', $time);
+            } else {
+                $time =  json_decode($this->ReadPropertyString('Time'), true);
+                $this->SetValueInteger('duty_cycle', 82800 + (($time['hour'] * 3600) + ($time['minute'] * 60) + $time['second']));
+            }
             $this->EnableAction('duty_cycle');
-        }
-        //Create our trigger
-        if (IPS_VariableExists($this->ReadPropertyInteger('StateVariable'))) {
-            $this->RegisterMessage($this->ReadPropertyInteger('StateVariable'), VM_UPDATE);
         }
     }
 
@@ -158,12 +229,12 @@ class LightAutomat extends IPSModule
                 // Switch state?
                 if ($data[0] == true && $data[1] == true) { // OnChange is TRUE => switched ON
                     $this->SendDebug(__FUNCTION__, 'OnChange is TRUE - ON');
-                    $this->SetTimerInterval('TriggerTimer', $this->CalculateTimer());
+                    $this->SetTimerInterval('TLA.Timer', $this->CalculateTimer());
                 } elseif ($data[0] == false && $data[1] == true) { // OnChange is FALSE => switched OFF
                     $this->SendDebug(__FUNCTION__, 'OnChange is FALSE - OFF');
-                    $this->SetTimerInterval('TriggerTimer', 0);
+                    $this->SetTimerInterval('TLA.Timer', 0);
                 } else { // OnChange - no chenges!
-                    $this->SendDebug(__FUNCTION__, 'OnChange - nothing chenged!');
+                    $this->SendDebug(__FUNCTION__, 'OnChange - nothing changed!');
                 }
             break;
           }
@@ -181,27 +252,29 @@ class LightAutomat extends IPSModule
         $this->SendDebug(__FUNCTION__, $ident . ' => ' . $value);
         // Ident == OnXxxxxYyyyy
         switch ($ident) {
-            case 'OnTimeUnit':
-                $this->OnTimeUnit($value);
-            break;
             case 'continuous_operation':
                 $this->SetValueBoolean($ident, $value);
             break;
             case 'duty_cycle':
                 $this->SetValueInteger($ident, $value);
             break;
-
+            case 'circuit_diagram':
+                $this->Schedule($value);
+            break;
+            case 'delay_trigger':
+                $this->Trigger();
+            break;
+            default:
+                eval('$this->' . $ident . '(\'' . $value . '\');');
         }
         //return true;
     }
 
     /**
-     * This function will be available automatically after the module is imported with the module control.
-     * Using the custom prefix this function will be callable from PHP and JSON-RPC through:.
+     * Trigger Timer 
      *
-     * TLA_Trigger($id);
      */
-    public function Trigger()
+    private function Trigger()
     {
         $sv = $this->ReadPropertyInteger('StateVariable');
         if (GetValueBoolean($sv) == true) {
@@ -211,15 +284,20 @@ class LightAutomat extends IPSModule
                     $this->SendDebug(__FUNCTION__, 'Motion detection aktive, still resume!');
                     return;
                 } else {
-                    if ($this->ReadPropertyBoolean('OnlyBool') == true) {
-                        SetValueBoolean($sv, false);
-                    } else {
-                        $ret = @RequestAction($sv, false); //Gerät ausschalten
+                    $ret = @RequestAction($sv, false);
+                    if ($ret === false) {
+                        $this->SendDebug(__FUNCTION__, 'Device #' . $sv . ' could not be switched by RequestAction!');
+                        $ret = @SetValueBoolean($sv, false);
                         if ($ret === false) {
-                            $this->SendDebug(__FUNCTION__, 'Device could not be switched off (UNREACH)!');
+                            $this->SendDebug(__FUNCTION__, 'Device could not be switched by Boolean!');
                         }
                     }
-                    $this->SendDebug(__FUNCTION__, 'StateVariable (#' . $sv . ') switched to FALSE!');
+                    if ($ret === false) {
+                        $this->LogMessage('Device could not be switched (UNREACH)!');
+                    }
+                    else {
+                        $this->SendDebug(__FUNCTION__, 'StateVariable (#' . $sv . ') switched to FALSE!');
+                    }
                 }
             }
             // Script ausführen
@@ -234,16 +312,15 @@ class LightAutomat extends IPSModule
         } else {
             $this->SendDebug(__FUNCTION__, 'STATE already on FALSE - delete Timer!');
         }
-        $this->SetTimerInterval('TriggerTimer', 0);
+        $this->SetTimerInterval('TLA.Timer', 0);
     }
 
     /**
-     * This function will be available automatically after the module is imported with the module control.
-     * Using the custom prefix this function will be callable from PHP and JSON-RPC through:.
+     * Schedule Event 
      *
      * @param integer $vaue Action value (ON=1, OFF=2)
      */
-    public function Schedule(int $value)
+    private function Schedule(int $value)
     {
         $this->SendDebug(__FUNCTION__, 'Value: ' . $value);
         // Check SChedule on Activate?
@@ -271,13 +348,43 @@ class LightAutomat extends IPSModule
     }
 
     /**
-     * This function will be available automatically after the module is imported with the module control.
-     * Using the custom prefix this function will be callable from PHP and JSON-RPC through:
+     * Calculate duration timer.
      *
-     * TLA_CreateSchedule($id);
-     *
+     * @return int   Timer intervall in milliseconds
      */
-    public function CreateSchedule()
+    private function CalculateTimer()
+    {
+        $interval = 0;
+        $unit = $this->ReadPropertyInteger('TimeUnit');
+        // Use internal or external variable
+        $duration = $this->ReadPropertyBoolean('CheckDuration');
+        if ($duration) {
+            if ($unit < self::TIME_CLOCK) {
+                $time = $this->GetValue('duty_cycle');
+                $interval = 1000 * self::TIME_UNIT[$unit][4] * $time;
+            } else {
+                $vid = $this->GetIDForIdent('duty_cycle');
+                $time = explode(':', GetValueFormatted($vid));
+                $interval = 1000 * (($time[0] * 3600) + ($time[1] * 60) + $time[2]);
+            }
+        } else {
+            if ($unit < self::TIME_CLOCK) {
+                $time = $this->ReadPropertyInteger('Duration');
+                $interval = 1000 * self::TIME_UNIT[$unit][4] * $time;
+            } else {
+                $time =  json_decode($this->ReadPropertyString('Time'), true);
+                $interval = 1000 * (($time[0] * 3600) + ($time[1] * 60) + $time[2]);
+            }
+        }
+        return $interval;
+    }
+
+    /**
+     * Creates a schedule plan.
+     *
+     * @param string $value instance ID.
+     */
+    private function OnCreateSchedule($value)
     {
         $eid = $this->CreateWeeklySchedule($this->InstanceID, self::SCHEDULE_NAME, self::SCHEDULE_IDENT, self::SCHEDULE_SWITCH, -1);
         if ($eid !== false) {
@@ -294,75 +401,23 @@ class LightAutomat extends IPSModule
     {
         $this->SendDebug(__FUNCTION__, $value);
         $data = unserialize($value);
-        // min/max/suffix
-        $suf = $this->Translate(self::TIME_UNIT[$data['unit']][1]);
-        $min = self::TIME_UNIT[$data['unit']][2];
-        $max = self::TIME_UNIT[$data['unit']][3];
-        // Set min/max/suffix
-        $this->UpdateFormField('Duration', 'minimum', $min);
-        $this->UpdateFormField('Duration', 'maximum', $max);
-        $this->UpdateFormField('Duration', 'suffix', $suf);
-        // Check Value
-        $value = $data['value'];
-        if ($value > $max) {
-            $value = 10; //default: 10
-            $this->UpdateFormField('Duration', 'value', $value);
+        if ($data['unit'] < self::TIME_CLOCK) {
+            // min/max/suffix
+            $suf = $this->Translate(self::TIME_UNIT[$data['unit']][1]);
+            $min = self::TIME_UNIT[$data['unit']][2];
+            $max = self::TIME_UNIT[$data['unit']][3];
+            // Set min/max/suffix
+            $this->UpdateFormField('Duration', 'minimum', $min);
+            $this->UpdateFormField('Duration', 'maximum', $max);
+            $this->UpdateFormField('Duration', 'suffix', $suf);
+            // Check Value
+            $value = $data['value'];
+            if ($value > $max) {
+                $value = 10; //default: 10
+                $this->UpdateFormField('Duration', 'value', $value);
+            }
         }
-    }
-
-    /**
-     * Calculate duration timer.
-     *
-     * @return int   Timer intervall in milliseconds
-     */
-    private function CalculateTimer()
-    {
-        $interval = 0;
-        $unit = $this->ReadPropertyInteger('TimeUnit');
-        $duration = $this->ReadPropertyBoolean('CheckDuration');
-        if ($duration) {
-            $time = $this->GetValue('duty_cycle');
-            $interval = 1000 * self::TIME_UNIT[$unit][4] * $time;
-        } else {
-            $time = $this->ReadPropertyInteger('Duration');
-            $interval = 1000 * self::TIME_UNIT[$unit][4] * $time;
-        }
-        return $interval;
-    }
-
-    /**
-     * Update a boolean value.
-     *
-     * @param string $ident Ident of the boolean variable
-     * @param bool   $value Value of the boolean variable
-     */
-    private function SetValueBoolean(string $ident, bool $value)
-    {
-        $id = $this->GetIDForIdent($ident);
-        SetValueBoolean($id, $value);
-    }
-
-    /**
-     * Update a string value.
-     *
-     * @param string $ident Ident of the string variable
-     * @param string $value Value of the string variable
-     */
-    private function SetValueString(string $ident, string $value)
-    {
-        $id = $this->GetIDForIdent($ident);
-        SetValueString($id, $value);
-    }
-
-    /**
-     * Update a integer value.
-     *
-     * @param string $ident Ident of the integer variable
-     * @param int    $value Value of the integer variable
-     */
-    private function SetValueInteger(string $ident, int $value)
-    {
-        $id = $this->GetIDForIdent($ident);
-        SetValueInteger($id, $value);
+        $this->UpdateFormField('Duration', 'visible', ($data['unit'] != self::TIME_CLOCK));
+        $this->UpdateFormField('Time', 'visible', ($data['unit'] == self::TIME_CLOCK));
     }
 }
