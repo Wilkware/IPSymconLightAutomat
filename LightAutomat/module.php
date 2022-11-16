@@ -200,7 +200,7 @@ class LightAutomat extends IPSModule
      */
     public function MessageSink($timeStamp, $senderID, $message, $data)
     {
-        // $this->SendDebug(__FUNCTION__, 'SenderId: '. $senderID . ' Data: ' . print_r($data, true), 0);
+        $this->SendDebug(__FUNCTION__, 'SenderId: ' . $senderID . ' Data: ' . print_r($data, true), 0);
         switch ($message) {
             case VM_UPDATE:
                 // Safty Check
@@ -236,8 +236,8 @@ class LightAutomat extends IPSModule
                 } else { // OnChange - no chenges!
                     $this->SendDebug(__FUNCTION__, 'OnChange - nothing changed!');
                 }
-            break;
-          }
+                break;
+        }
     }
 
     /**
@@ -254,16 +254,16 @@ class LightAutomat extends IPSModule
         switch ($ident) {
             case 'continuous_operation':
                 $this->SetValueBoolean($ident, $value);
-            break;
+                break;
             case 'duty_cycle':
                 $this->SetValueInteger($ident, $value);
-            break;
+                break;
             case 'circuit_diagram':
                 $this->Schedule($value);
-            break;
+                break;
             case 'delay_trigger':
                 $this->Trigger();
-            break;
+                break;
             default:
                 eval('$this->' . $ident . '(\'' . $value . '\');');
         }
