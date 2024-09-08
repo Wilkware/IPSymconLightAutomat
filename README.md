@@ -1,10 +1,10 @@
 # Lichtautomat (Light Automat)
 
-[![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Product](https://img.shields.io/badge/Symcon%20Version-6.0-blue.svg)](https://www.symcon.de/produkt/)
-[![Version](https://img.shields.io/badge/Modul%20Version-6.0.20220401-orange.svg)](https://github.com/Wilkware/IPSymconLightAutomat)
-[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-[![Actions](https://github.com/Wilkware/IPSymconLightAutomat/workflows/Check%20Style/badge.svg)](https://github.com/Wilkware/IPSymconLightAutomat/actions)
+[![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg?style=flat-square)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+[![Product](https://img.shields.io/badge/Symcon%20Version-6.4-blue.svg?style=flat-square)](https://www.symcon.de/produkt/)
+[![Version](https://img.shields.io/badge/Modul%20Version-7.0.20240908-orange.svg?style=flat-square)](https://github.com/Wilkware/LightAutomat)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Actions](https://img.shields.io/github/actions/workflow/status/wilkware/LightAutomat/style.yml?branch=main&label=CheckStyle&style=flat-square)](https://github.com/Wilkware/LightAutomat/actions)
 
 Das Modul Lichtautomat (Light Automat) überwacht und schaltet das Licht automatisch nach einer bestimmten Zeit wieder aus.
 
@@ -15,14 +15,14 @@ Das Modul Lichtautomat (Light Automat) überwacht und schaltet das Licht automat
 3. [Installation](#user-content-3-installation)
 4. [Einrichten der Instanzen in IP-Symcon](#user-content-4-einrichten-der-instanzen-in-ip-symcon)
 5. [Statusvariablen und Profile](#user-content-5-statusvariablen-und-profile)
-6. [WebFront](#user-content-6-webfront)
+6. [Visualisierung](#user-content-6-visualisierung)
 7. [PHP-Befehlsreferenz](#user-content-7-php-befehlsreferenz)
 8. [Versionshistorie](#user-content-8-versionshistorie)
 
 ### 1. Funktionsumfang
 
 * Überwacht und schaltet das Licht automatisch nach einer bestimmten Zeit wieder aus.
-* Bei Variablenänderung der Statusvariable (STATE)) wird ein Timer gestartet.
+* Bei Variablenänderung der Statusvariable (STATE) wird ein Timer gestartet.
 * Nach eingestellter Zeit wird der Staus wieder zurückgestellt ("STATE" = flase).
 * Sollte das Licht schon vorher manuell aus geschalten worden sein, wird der Timer deaktiviert.
 * Zusätzlich bzw. ausschließlich kann ein Script ausgeführt werden.
@@ -34,17 +34,17 @@ Das Modul Lichtautomat (Light Automat) überwacht und schaltet das Licht automat
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 6.0
+* IP-Symcon ab Version 6.4
 
 ### 3. Installation
 
 * Über den Modul Store das Modul _Lichtautomat_ installieren.
 * Alternativ Über das Modul-Control folgende URL hinzufügen.  
-`https://github.com/Wilkware/IPSymconLightAutomat` oder `git://github.com/Wilkware/IPSymconLightAutomat.git`
+`https://github.com/Wilkware/LightAutomat` oder `git://github.com/Wilkware/LightAutomat.git`
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
-* Unter 'Instanz hinzufügen' ist das _Lichtautomat_-Modul (Alias: _Treppenautomat_, _Tasterschaltung_) unter dem Hersteller '(Geräte)' aufgeführt.
+* Unter 'Instanz hinzufügen' ist das _Lichtautomat_-Modul (Alias: _Treppenautomat_) unter dem Hersteller '(Geräte)' aufgeführt.
 
 __Konfigurationsseite__:
 
@@ -94,17 +94,26 @@ TLA.Seconds          | Integer   | Zeitraum von 1 bis 59 Sekunden
 TLA.Minutes          | Integer   | Zeitraum von 1 bis 59 Minuten
 TLA.Hours            | Integer   | Zeitraum von 1 bis 23 Stunden
 
-### 6. WebFront
+### 6. Visualisierung
 
 Es ist keine weitere Steuerung oder gesonderte Darstellung integriert.  
-Der Dauerbetrieb kann über die Statusvariable "Dauerbetrieb" im WebFront realsiert werden.  
-Die Wartezeit kann auch über die Statusvariable "Einschaltdauer" im Webfront realisiert werden.
+Der Dauerbetrieb kann über die Statusvariable "Dauerbetrieb" in der Visualisierung realsiert werden.  
+Die Wartezeit kann auch über die Statusvariable "Einschaltdauer" so realisiert werden.
 
 ### 7. PHP-Befehlsreferenz
 
 Ein direkter Aufruf von öffentlichen Funktionen ist nicht notwendig!
 
 ### 8. Versionshistorie
+
+v7.0.20240908
+
+* _NEU_: Kompatibilität auf IPS 6.4 hoch gesetzt
+* _FIX_: Bibliotheks- bzw. Modulinfos vereinheitlicht
+* _FIX_: Namensnennung und Repo vereinheitlicht
+* _FIX_: Update Style-Checks
+* _FIX_: Übersetzungen überarbeitet und verbessert
+* _FIX_: Dokumentation vereinheitlicht
 
 v6.0.20220401
 

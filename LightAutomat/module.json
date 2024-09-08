@@ -1,12 +1,11 @@
 {
     "id": "{7F7BE9E1-FD90-4BF5-89C0-4EEB431F22F9}",
     "name": "Light Automat",
+    "url": "https://wilkware.de/ip-symcon-module/lichtautomat/",
     "type": 3,
     "vendor": "",
     "aliases": [
-        "Lichtautomat",
-        "Treppenautomat",
-        "Tasterschaltung"
+        "Staircase control"
     ],
     "parentRequirements": [],
     "childRequirements": [],

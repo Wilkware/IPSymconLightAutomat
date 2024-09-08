@@ -5,7 +5,9 @@ declare(strict_types=1);
 // General helper functions
 require_once __DIR__ . '/../libs/_traits.php';
 
-// CLASS LightAutomat
+/**
+ * CLASS LightAutomat
+ */
 class LightAutomat extends IPSModule
 {
     use DebugHelper;
@@ -55,7 +57,7 @@ class LightAutomat extends IPSModule
         // Profile
         foreach (self::TIME_UNIT as $key => $value) {
             if ($key != self::TIME_CLOCK) {
-                $this->RegisterProfile(vtInteger, $value[0], 'Clock', '', $this->Translate($value[1]), $value[2], $value[3], 1, 0, null);
+                $this->RegisterProfileInteger($value[0], 'Clock', '', $this->Translate($value[1]), $value[2], $value[3], 1, null);
             }
         }
         // Timer
@@ -170,14 +172,14 @@ class LightAutomat extends IPSModule
 
         // Maintain variables
         $permanent = $this->ReadPropertyBoolean('CheckPermanent');
-        $this->MaintainVariable('continuous_operation', $this->Translate('Continuous operation'), vtBoolean, '~Switch', 0, $permanent);
+        $this->MaintainVariable('continuous_operation', $this->Translate('Continuous operation'), VARIABLETYPE_BOOLEAN, '~Switch', 0, $permanent);
         if ($permanent) {
             $this->SetValueBoolean('continuous_operation', false);
             $this->EnableAction('continuous_operation');
         }
         $duration = $this->ReadPropertyBoolean('CheckDuration');
         $unit = $this->ReadPropertyInteger('TimeUnit');
-        $this->MaintainVariable('duty_cycle', $this->Translate('Duty cycle'), vtInteger, self::TIME_UNIT[$unit][0], 1, $duration);
+        $this->MaintainVariable('duty_cycle', $this->Translate('Duty cycle'), VARIABLETYPE_INTEGER, self::TIME_UNIT[$unit][0], 1, $duration);
         $this->SendDebug(__FUNCTION__, 'Create duration: ' . $duration . ' Create perament: ' . $permanent, 0);
         if ($duration) {
             if ($unit < self::TIME_CLOCK) {
@@ -192,15 +194,16 @@ class LightAutomat extends IPSModule
     }
 
     /**
-     * Internal SDK funktion.
-     * data[0] = new value
-     * data[1] = value changed?
-     * data[2] = old value
-     * data[3] = timestamp.
+     * MessageSink - internal SDK funktion.
+     *
+     * @param mixed $timeStamp Message timeStamp
+     * @param mixed $senderID Sender ID
+     * @param mixed $message Message type
+     * @param mixed $data data[0] = new value, data[1] = value changed, data[2] = old value, data[3] = timestamp
      */
     public function MessageSink($timeStamp, $senderID, $message, $data)
     {
-        $this->SendDebug(__FUNCTION__, 'SenderId: ' . $senderID . ' Data: ' . print_r($data, true), 0);
+        //$this->SendDebug(__FUNCTION__, 'SenderId: ' . $senderID . ' Data: ' . print_r($data, true), 0);
         switch ($message) {
             case VM_UPDATE:
                 // Safty Check
