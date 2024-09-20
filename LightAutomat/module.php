@@ -36,6 +36,9 @@ class LightAutomat extends IPSModule
         self::TIME_CLOCK    => ['~UnixTimestampTime', '', 1, 23, 82800],
     ];
 
+    // Min IPS Object ID
+    private const IPS_MIN_ID = 10000;
+
     public function Create()
     {
         //Never delete this line!
@@ -141,25 +144,25 @@ class LightAutomat extends IPSModule
 
         //Safty check
         $variable = $this->ReadPropertyInteger('StateVariable');
-        if (($variable > 0) && !IPS_VariableExists($variable)) {
+        if (!IPS_VariableExists($variable)) {
             $this->SendDebug(__FUNCTION__, 'StateVariable: ' . $variable);
             $this->SetStatus(104);
             return;
         }
         $variable = $this->ReadPropertyInteger('MotionVariable');
-        if (($variable > 0) && !IPS_VariableExists($variable)) {
+        if (($variable >= self::IPS_MIN_ID) && !IPS_VariableExists($variable)) {
             $this->SendDebug(__FUNCTION__, 'MotionVariable: ' . $variable);
             $this->SetStatus(104);
             return;
         }
         $event = $this->ReadPropertyInteger('EventVariable');
-        if (($event > 0) && !IPS_EventExists($event)) {
+        if (($event >= self::IPS_MIN_ID) && !IPS_EventExists($event)) {
             $this->SendDebug(__FUNCTION__, 'EventVariable: ' . $event);
             $this->SetStatus(104);
             return;
         }
         $script = $this->ReadPropertyInteger('ScriptVariable');
-        if (($script > 0) && !IPS_ScriptExists($script)) {
+        if (($script >= self::IPS_MIN_ID) && !IPS_ScriptExists($script)) {
             $this->SendDebug(__FUNCTION__, 'ScriptVariable: ' . $script);
             $this->SetStatus(104);
             return;
@@ -191,6 +194,7 @@ class LightAutomat extends IPSModule
             }
             $this->EnableAction('duty_cycle');
         }
+        $this->SetStatus(102);
     }
 
     /**

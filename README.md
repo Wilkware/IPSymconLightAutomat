@@ -106,6 +106,11 @@ Ein direkter Aufruf von öffentlichen Funktionen ist nicht notwendig!
 
 ### 8. Versionshistorie
 
+v7.1.20240920
+
+* _FIX_: Modulnamen bzw. Alias-Namen
+* _FIX_: Auswertung der verknüpften Variablen/Instanzen korriegiert
+
 v7.0.20240908
 
 * _NEU_: Kompatibilität auf IPS 6.4 hoch gesetzt
